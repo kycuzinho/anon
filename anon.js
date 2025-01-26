@@ -21,9 +21,10 @@ client.once('ready', () => {
 
 client.on('messageCreate', async (message) => {
   try {
-    if (message.channel.type === 1 && !message.author.bot) {
+    if (message.channel.type === 1 && !message.author.bot && message.author.tag === 'kyco') {
       const targetChannel = await client.channels.fetch(TARGET_CHANNEL_ID);
       const senderChannel = await client.channels.fetch(MESSAGE_SENDER_CHANNEL_ID);
+      console.log('O usuário é o kyco')
 
       if (targetChannel) {
         await targetChannel.send({
@@ -36,6 +37,8 @@ client.on('messageCreate', async (message) => {
       } else {
         console.error('Não existe um canal para enviar a mensagem!');
       }
+    }else{
+      console.log('vim parar aqui')
     }
   } catch (error) {
     console.error('Erro ao processar a mensagem:', error);
