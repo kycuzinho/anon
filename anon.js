@@ -1,4 +1,4 @@
-require('dotenv').config(); 
+require('dotenv').config();
 
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
@@ -20,15 +20,25 @@ client.once('ready', () => {
 });
 
 client.on('messageCreate', async (message) => {
-  if (message.channel.type === 1 && !message.author.bot) {
-    const targetChannel = await client.channels.fetch(TARGET_CHANNEL_ID);
-    const senderChannel = await client.channels.fetch(MESSAGE_SENDER_CHANNEL_ID);
-    if (targetChannel) {
-      targetChannel.send(`${message.content}`);
-      senderChannel.send(`**Messagem de ${message.author.tag}:**\n${message.content}`)
-    } else {
-      console.error('Não existe um canal para enviar a mensagem!');
+  try {
+    if (message.channel.type === 1 && !message.author.bot) {
+      const targetChannel = await client.channels.fetch(TARGET_CHANNEL_ID);
+      const senderChannel = await client.channels.fetch(MESSAGE_SENDER_CHANNEL_ID);
+
+      if (targetChannel) {
+        await targetChannel.send({
+          content: `${message.content}`,
+          allowedMentions: { parse: [] }, // Suppresses mentions
+        });
+        await senderChannel.send(
+          `**Mensagem de ${message.author.tag}:**\n${message.content}`
+        );
+      } else {
+        console.error('Não existe um canal para enviar a mensagem!');
+      }
     }
+  } catch (error) {
+    console.error('Erro ao processar a mensagem:', error);
   }
 });
 
